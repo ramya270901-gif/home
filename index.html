@@ -145,7 +145,43 @@ section{padding:8rem 4rem}
 footer{background:#050508;padding:2.5rem 4rem;display:flex;align-items:center;justify-content:space-between}
 .ft-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(255,255,255,.3)}
 .ft-brand em{font-style:italic;color:rgba(154,120,64,.6)}
-.ft-copy{font-size:.72rem;color:rgba(255,255,255,.2);letter-spacing:.06em}
+.ft-copy{font-size:.72rem;color:rgba(255,255,255,.2);letter-spacing:.06em;cursor:default;user-select:none}
+.adm-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(10,10,15,.88);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:2rem}
+.adm-overlay.open{display:flex}
+.adm-box{background:var(--ink);border:1px solid rgba(154,120,64,.22);border-radius:4px;padding:3rem;width:100%;max-width:400px;position:relative}
+.adm-box h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:#fff;margin-bottom:.25rem}
+.adm-box p{font-size:.68rem;color:rgba(255,255,255,.3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:2rem}
+.adm-field{margin-bottom:1.2rem}
+.adm-field label{display:block;font-size:.62rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.45rem}
+.adm-field input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.14);padding:.7rem 0;color:#fff;font-family:'Outfit',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s}
+.adm-field input:focus{border-color:var(--gold)}
+.adm-field input::placeholder{color:rgba(255,255,255,.2)}
+.adm-login-btn{width:100%;margin-top:1.5rem;padding:.85rem;background:var(--gold);color:var(--ink);border:none;border-radius:1px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.adm-login-btn:hover{background:var(--gold-lt)}
+.adm-err{font-size:.78rem;color:#e57373;margin-top:.75rem;min-height:1rem;text-align:center}
+.adm-close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;color:rgba(255,255,255,.3);font-size:1.3rem;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s}
+.adm-close-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+#write-panel{display:none;position:fixed;inset:0;z-index:700;background:var(--cream);overflow-y:auto;padding:3rem 4rem}
+#write-panel.open{display:block}
+.wp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.wp-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:400;color:var(--ink)}
+.wp-owner-tag{font-size:.65rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-top:.2rem}
+.wp-close{background:none;border:none;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--muted);border-radius:50%;transition:background .15s}
+.wp-close:hover{background:var(--cream2)}
+.wp-form{max-width:780px;display:flex;flex-direction:column;gap:1.25rem}
+.wp-row{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.wp-form input,.wp-form select,.wp-form textarea{width:100%;border:none;border-bottom:1px solid var(--border);padding:.9rem 0;font-family:'Outfit',sans-serif;font-size:.95rem;color:var(--ink);background:transparent;outline:none;transition:border-color .2s;border-radius:0}
+.wp-form input:focus,.wp-form select:focus,.wp-form textarea:focus{border-color:var(--gold)}
+.wp-form textarea{min-height:360px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.9;resize:vertical}
+.wp-form input::placeholder,.wp-form textarea::placeholder{color:var(--muted);font-weight:300}
+.wp-hint{font-size:.72rem;color:var(--muted);margin-top:.3rem}
+.wp-pub-bar{display:flex;align-items:center;gap:1.5rem;margin-top:.5rem}
+.wp-pub{padding:.9rem 2.5rem;background:var(--ink);color:var(--cream);border:none;border-radius:1px;font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.wp-pub:hover{background:var(--navy)}
+.wp-pub:disabled{opacity:.5;cursor:not-allowed}
+.wp-pub-status{font-size:.82rem;color:var(--muted)}
+.wp-pub-status.ok{color:#4caf50}
+.wp-pub-status.err{color:#e57373}
 .toast{display:none;position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--ink);color:#fff;padding:.9rem 1.75rem;border-left:3px solid var(--gold);border-radius:2px;font-size:.84rem;box-shadow:0 12px 40px rgba(0,0,0,.25)}
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
 .reveal.visible{opacity:1;transform:none}
@@ -310,7 +346,7 @@ footer{background:#050508;padding:2.5rem 4rem;display:flex;align-items:center;ju
 </section>
 <footer>
   <div class="ft-brand">Ramya Ravi &mdash; <em>Advocate &amp; IP Scholar</em></div>
-  <div class="ft-copy">&copy; 2025 &middot; All Rights Reserved</div>
+  <div class="ft-copy" id="ftCopy" onclick="adminTap()">&copy; 2025 &middot; All Rights Reserved</div>
 </footer>
 <div class="modal-bg" id="modal" onclick="closeModal(event)">
   <div class="modal">
@@ -322,12 +358,71 @@ footer{background:#050508;padding:2.5rem 4rem;display:flex;align-items:center;ju
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<!-- Admin Login Overlay (secret: click © 5 times) -->
+<div class="adm-overlay" id="admOverlay">
+  <div class="adm-box">
+    <button class="adm-close-btn" onclick="closeAdminOverlay()">&#215;</button>
+    <h3>Admin Access</h3>
+    <p>Owner sign-in</p>
+    <div class="adm-field"><label>Password</label><input type="password" id="admPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="adm-field"><label>GitHub Token</label><input type="password" id="admToken" placeholder="ghp_xxxxxxxxxxxx" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <button class="adm-login-btn" onclick="doAdminLogin()">Sign In</button>
+    <div class="adm-err" id="admErr"></div>
+  </div>
+</div>
+<!-- Write Panel (owner only, slides over page) -->
+<div id="write-panel">
+  <div class="wp-head">
+    <div>
+      <div class="wp-title">New Blog Post</div>
+      <div class="wp-owner-tag">&#9679; Owner Access</div>
+    </div>
+    <button class="wp-close" onclick="closeWrite()">&#215;</button>
+  </div>
+  <div class="wp-form">
+    <div class="wp-row">
+      <div>
+        <select id="wpTag">
+          <option value="Trademark Law">Trademark Law</option>
+          <option value="Copyright">Copyright</option>
+          <option value="Patent Law">Patent Law</option>
+          <option value="IP Prosecution">IP Prosecution</option>
+          <option value="IP Licensing">IP Licensing</option>
+          <option value="IP &amp; Technology">IP &amp; Technology</option>
+          <option value="Case Commentary">Case Commentary</option>
+          <option value="Landmark Cases">Landmark Cases</option>
+          <option value="International IP">International IP</option>
+          <option value="Legal Insights">Legal Insights</option>
+        </select>
+      </div>
+      <div>
+        <input type="text" id="wpRead" placeholder="Reading time (e.g. 6 min) — auto if blank">
+      </div>
+    </div>
+    <input type="text" id="wpTitle" placeholder="Post title&hellip;">
+    <div>
+      <textarea id="wpBody" placeholder="Write your post here.
+
+Separate paragraphs with a blank line.
+Use ### Heading for section headings.
+Use **bold** for emphasis."></textarea>
+      <div class="wp-hint">Blank line = new paragraph &nbsp;·&nbsp; ### Heading = section header &nbsp;·&nbsp; **text** = bold</div>
+    </div>
+    <div class="wp-pub-bar">
+      <button class="wp-pub" id="wpPubBtn" onclick="publishPost()">Publish Post &rarr;</button>
+      <span class="wp-pub-status" id="wpPubStatus"></span>
+    </div>
+  </div>
+</div>
 <script>
+// ── Cursor ──
 const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'},80)});
 window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40)});
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:.12});
 document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+// ── Blog: load from posts.json ──
 let allPosts=[];
 function renderPosts(){
   if(!allPosts.length)return;
@@ -335,12 +430,104 @@ function renderPosts(){
   document.getElementById('featuredPost').innerHTML=`<div class="blog-feat-content" onclick="openModal(0)"><div class="blog-feat-tag">${p.tag}</div><h3 class="blog-feat-title">${p.title}</h3><p class="blog-feat-excerpt">${p.excerpt}</p><div class="blog-feat-foot"><span>${p.date} &middot; ${p.read} read</span><span class="read-arrow">Read Article <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div></div><div class="blog-feat-vis"><div class="blog-feat-vis-inner">&sect;</div></div>`;
   document.getElementById('secondaryPosts').innerHTML=allPosts.slice(1).map((p,i)=>`<div class="blog-card" onclick="openModal(${i+1})"><div class="bc-tag">${p.tag}</div><div class="bc-title">${p.title}</div><div class="bc-foot"><span>${p.date} &middot; ${p.read}</span><span class="bc-arrow">&rarr;</span></div></div>`).join('');
   document.getElementById('blogCount').textContent=`${allPosts.length} post${allPosts.length!==1?'s':''} published`;
+  // Show owner write button if logged in
+  if(sessionStorage.getItem('gh_token')){
+    const bc=document.getElementById('blogCount');
+    if(!document.getElementById('ownerWriteBtn')){
+      const btn=document.createElement('a');btn.id='ownerWriteBtn';btn.href='#';btn.className='btn-gold';btn.style.cssText='font-size:.72rem;padding:.7rem 1.6rem;margin-left:1rem';btn.textContent='+ New Post';btn.onclick=e=>{e.preventDefault();openWrite();};
+      bc.parentNode.appendChild(btn);
+    }
+  }
 }
 function openModal(i){const p=allPosts[i];document.getElementById('mTag').textContent=p.tag;document.getElementById('mTitle').textContent=p.title;document.getElementById('mMeta').textContent=p.date+' · '+p.read+' read';document.getElementById('mBody').innerHTML=p.body;document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden';}
 function closeModal(e,f){if(f||e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}}
-function sendMsg(e){e.preventDefault();showToast('✓ Message sent — I\'ll be in touch soon');e.target.reset();}
+function sendMsg(e){e.preventDefault();showToast('✓ Message sent — I'll be in touch soon');e.target.reset();}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>{t.style.display='none';},3500);}
 fetch('posts.json?v='+Date.now()).then(r=>r.json()).then(data=>{allPosts=data;renderPosts();}).catch(()=>{document.getElementById('blogCount').textContent='Posts coming soon';});
+
+// ── Secret admin trigger: click © 5 times ──
+let tapCount=0,tapTimer=null;
+function adminTap(){
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer=setTimeout(()=>{tapCount=0;},2000);
+  if(tapCount>=5){
+    tapCount=0;
+    if(sessionStorage.getItem('gh_token')){openWrite();}
+    else{document.getElementById('admOverlay').classList.add('open');}
+  }
+}
+function closeAdminOverlay(){document.getElementById('admOverlay').classList.remove('open');document.getElementById('admErr').textContent='';}
+
+// ── Admin login ──
+const PASS_HASH='b805989341e173008586457e03b452e951a9e4c540f596ef99b14d6d4f1ffb0e';
+async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function doAdminLogin(){
+  const pass=document.getElementById('admPass').value;
+  const token=document.getElementById('admToken').value.trim();
+  const err=document.getElementById('admErr');
+  if(!pass||!token){err.textContent='Enter password and token.';return;}
+  const h=await sha256(pass);
+  if(h!==PASS_HASH){err.textContent='Incorrect password.';return;}
+  err.textContent='Verifying token…';
+  const r=await fetch('https://api.github.com/repos/ramya270901-gif/home',{headers:{Authorization:'token '+token}});
+  if(!r.ok){err.textContent='Token invalid or no repo access.';return;}
+  sessionStorage.setItem('gh_token',token);
+  closeAdminOverlay();
+  document.getElementById('admPass').value='';
+  document.getElementById('admToken').value='';
+  renderPosts();
+  openWrite();
+}
+
+// ── Write panel ──
+function openWrite(){document.getElementById('write-panel').classList.add('open');document.body.style.overflow='hidden';}
+function closeWrite(){document.getElementById('write-panel').classList.remove('open');document.body.style.overflow='';}
+
+function parseBody(raw){
+  return raw.split(/
+
++/).map(block=>{
+    block=block.trim();if(!block)return '';
+    if(block.startsWith('### '))return '<h3>'+block.slice(4).replace(/&/g,'&amp;')+'</h3>';
+    return '<p>'+block.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/
+/g,' ')+'</p>';
+  }).join('');
+}
+
+async function publishPost(){
+  const title=document.getElementById('wpTitle').value.trim();
+  const tag=document.getElementById('wpTag').value;
+  const rawBody=document.getElementById('wpBody').value.trim();
+  const readVal=document.getElementById('wpRead').value.trim();
+  const btn=document.getElementById('wpPubBtn');
+  const status=document.getElementById('wpPubStatus');
+  if(!title||!rawBody){status.className='wp-pub-status err';status.textContent='Title and body required.';return;}
+  btn.disabled=true;status.className='wp-pub-status';status.textContent='Publishing…';
+  try{
+    const token=sessionStorage.getItem('gh_token');
+    // Get current posts.json SHA
+    const meta=await fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{headers:{Authorization:'token '+token,Accept:'application/vnd.github+json'}});
+    const metaJson=await meta.json();
+    const curPosts=JSON.parse(atob(metaJson.content.replace(/
+/g,'')));
+    const words=rawBody.split(/\s+/).length;
+    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const d=new Date();
+    const newPost={tag,title,date:months[d.getMonth()]+' '+d.getFullYear(),read:readVal||(Math.max(2,Math.round(words/200))+' min'),excerpt:rawBody.replace(/###[^
+]*/g,'').replace(/\*\*/g,'').replace(/
+/g,' ').trim().slice(0,200)+'…',body:parseBody(rawBody)};
+    curPosts.unshift(newPost);
+    const newContent=btoa(unescape(encodeURIComponent(JSON.stringify(curPosts,null,2))));
+    const res=await fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{method:'PUT',headers:{Authorization:'token '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'Add post: '+title,content:newContent,sha:metaJson.sha})});
+    if(!res.ok){const e=await res.json();throw new Error(e.message||'GitHub API error');}
+    allPosts.unshift(newPost);renderPosts();
+    document.getElementById('wpTitle').value='';document.getElementById('wpBody').value='';document.getElementById('wpRead').value='';
+    status.className='wp-pub-status ok';status.textContent='✓ Published! Live in ~60 seconds.';
+    setTimeout(()=>{closeWrite();document.getElementById('blog').scrollIntoView({behavior:'smooth'});},1800);
+  }catch(e){status.className='wp-pub-status err';status.textContent='Error: '+e.message;}
+  btn.disabled=false;
+}
 </script>
 </body>
 </html>
