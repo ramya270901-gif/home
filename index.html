@@ -415,118 +415,97 @@ Use **bold** for emphasis."></textarea>
   </div>
 </div>
 <script>
-// ── Cursor ──
 const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'},80)});
 window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40)});
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});},{threshold:.12});
 document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
 
-// ── Blog: load from posts.json ──
 let allPosts=[];
 function renderPosts(){
   if(!allPosts.length)return;
   const p=allPosts[0];
-  document.getElementById('featuredPost').innerHTML=`<div class="blog-feat-content" onclick="openModal(0)"><div class="blog-feat-tag">${p.tag}</div><h3 class="blog-feat-title">${p.title}</h3><p class="blog-feat-excerpt">${p.excerpt}</p><div class="blog-feat-foot"><span>${p.date} &middot; ${p.read} read</span><span class="read-arrow">Read Article <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div></div><div class="blog-feat-vis"><div class="blog-feat-vis-inner">&sect;</div></div>`;
-  document.getElementById('secondaryPosts').innerHTML=allPosts.slice(1).map((p,i)=>`<div class="blog-card" onclick="openModal(${i+1})"><div class="bc-tag">${p.tag}</div><div class="bc-title">${p.title}</div><div class="bc-foot"><span>${p.date} &middot; ${p.read}</span><span class="bc-arrow">&rarr;</span></div></div>`).join('');
-  document.getElementById('blogCount').textContent=`${allPosts.length} post${allPosts.length!==1?'s':''} published`;
-  // Show owner write button if logged in
-  if(sessionStorage.getItem('gh_token')){
-    const bc=document.getElementById('blogCount');
-    if(!document.getElementById('ownerWriteBtn')){
-      const btn=document.createElement('a');btn.id='ownerWriteBtn';btn.href='#';btn.className='btn-gold';btn.style.cssText='font-size:.72rem;padding:.7rem 1.6rem;margin-left:1rem';btn.textContent='+ New Post';btn.onclick=e=>{e.preventDefault();openWrite();};
-      bc.parentNode.appendChild(btn);
-    }
+  document.getElementById('featuredPost').innerHTML='<div class="blog-feat-content" onclick="openModal(0)"><div class="blog-feat-tag">'+p.tag+'</div><h3 class="blog-feat-title">'+p.title+'</h3><p class="blog-feat-excerpt">'+p.excerpt+'</p><div class="blog-feat-foot"><span>'+p.date+' &middot; '+p.read+' read</span><span class="read-arrow">Read Article <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></div></div><div class="blog-feat-vis"><div class="blog-feat-vis-inner">&sect;</div></div>';
+  document.getElementById('secondaryPosts').innerHTML=allPosts.slice(1).map(function(p,i){return '<div class="blog-card" onclick="openModal('+(i+1)+')"><div class="bc-tag">'+p.tag+'</div><div class="bc-title">'+p.title+'</div><div class="bc-foot"><span>'+p.date+' &middot; '+p.read+'</span><span class="bc-arrow">&rarr;</span></div></div>';}).join('');
+  document.getElementById('blogCount').textContent=allPosts.length+' post'+(allPosts.length!==1?'s':'')+' published';
+  if(sessionStorage.getItem('gh_token')&&!document.getElementById('ownerWriteBtn')){
+    var btn=document.createElement('a');btn.id='ownerWriteBtn';btn.href='#';btn.className='btn-gold';btn.style.cssText='font-size:.72rem;padding:.7rem 1.6rem;margin-left:1rem';btn.textContent='+ New Post';btn.onclick=function(e){e.preventDefault();openWrite();};
+    document.getElementById('blogCount').parentNode.appendChild(btn);
   }
 }
-function openModal(i){const p=allPosts[i];document.getElementById('mTag').textContent=p.tag;document.getElementById('mTitle').textContent=p.title;document.getElementById('mMeta').textContent=p.date+' · '+p.read+' read';document.getElementById('mBody').innerHTML=p.body;document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden';}
+function openModal(i){var p=allPosts[i];document.getElementById('mTag').textContent=p.tag;document.getElementById('mTitle').textContent=p.title;document.getElementById('mMeta').textContent=p.date+' · '+p.read+' read';document.getElementById('mBody').innerHTML=p.body;document.getElementById('modal').classList.add('open');document.body.style.overflow='hidden';}
 function closeModal(e,f){if(f||e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}}
-function sendMsg(e){e.preventDefault();showToast('✓ Message sent — I'll be in touch soon');e.target.reset();}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>{t.style.display='none';},3500);}
-fetch('posts.json?v='+Date.now()).then(r=>r.json()).then(data=>{allPosts=data;renderPosts();}).catch(()=>{document.getElementById('blogCount').textContent='Posts coming soon';});
+function sendMsg(e){e.preventDefault();showToast('\u2713 Message sent \u2014 I\u2019ll be in touch soon');e.target.reset();}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3500);}
+fetch('posts.json?v='+Date.now()).then(function(r){return r.json();}).then(function(data){allPosts=data;renderPosts();}).catch(function(){document.getElementById('blogCount').textContent='Posts coming soon';});
 
-// ── Secret admin trigger: click © 5 times ──
-let tapCount=0,tapTimer=null;
+var tapCount=0,tapTimer=null;
 function adminTap(){
-  tapCount++;
-  clearTimeout(tapTimer);
-  tapTimer=setTimeout(()=>{tapCount=0;},2000);
-  if(tapCount>=5){
-    tapCount=0;
-    if(sessionStorage.getItem('gh_token')){openWrite();}
-    else{document.getElementById('admOverlay').classList.add('open');}
-  }
+  tapCount++;clearTimeout(tapTimer);
+  tapTimer=setTimeout(function(){tapCount=0;},2000);
+  if(tapCount>=5){tapCount=0;if(sessionStorage.getItem('gh_token')){openWrite();}else{document.getElementById('admOverlay').classList.add('open');}}
 }
 function closeAdminOverlay(){document.getElementById('admOverlay').classList.remove('open');document.getElementById('admErr').textContent='';}
 
-// ── Admin login ──
-const PASS_HASH='b805989341e173008586457e03b452e951a9e4c540f596ef99b14d6d4f1ffb0e';
-async function sha256(msg){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function doAdminLogin(){
-  const pass=document.getElementById('admPass').value;
-  const token=document.getElementById('admToken').value.trim();
-  const err=document.getElementById('admErr');
+var PASS_HASH='b805989341e173008586457e03b452e951a9e4c540f596ef99b14d6d4f1ffb0e';
+function sha256(msg){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg)).then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');});}
+function doAdminLogin(){
+  var pass=document.getElementById('admPass').value;
+  var token=document.getElementById('admToken').value.trim();
+  var err=document.getElementById('admErr');
   if(!pass||!token){err.textContent='Enter password and token.';return;}
-  const h=await sha256(pass);
-  if(h!==PASS_HASH){err.textContent='Incorrect password.';return;}
-  err.textContent='Verifying token…';
-  const r=await fetch('https://api.github.com/repos/ramya270901-gif/home',{headers:{Authorization:'token '+token}});
-  if(!r.ok){err.textContent='Token invalid or no repo access.';return;}
-  sessionStorage.setItem('gh_token',token);
-  closeAdminOverlay();
-  document.getElementById('admPass').value='';
-  document.getElementById('admToken').value='';
-  renderPosts();
-  openWrite();
+  sha256(pass).then(function(h){
+    if(h!==PASS_HASH){err.textContent='Incorrect password.';return;}
+    err.textContent='Verifying token…';
+    fetch('https://api.github.com/repos/ramya270901-gif/home',{headers:{Authorization:'token '+token}}).then(function(r){
+      if(!r.ok){err.textContent='Token invalid or no repo access.';return;}
+      sessionStorage.setItem('gh_token',token);
+      closeAdminOverlay();
+      document.getElementById('admPass').value='';
+      document.getElementById('admToken').value='';
+      renderPosts();openWrite();
+    });
+  });
 }
-
-// ── Write panel ──
 function openWrite(){document.getElementById('write-panel').classList.add('open');document.body.style.overflow='hidden';}
 function closeWrite(){document.getElementById('write-panel').classList.remove('open');document.body.style.overflow='';}
-
 function parseBody(raw){
-  return raw.split(/
-
-+/).map(block=>{
+  return raw.split(/\n\n+/).map(function(block){
     block=block.trim();if(!block)return '';
     if(block.startsWith('### '))return '<h3>'+block.slice(4).replace(/&/g,'&amp;')+'</h3>';
-    return '<p>'+block.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/
-/g,' ')+'</p>';
+    return '<p>'+block.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,' ')+'</p>';
   }).join('');
 }
-
-async function publishPost(){
-  const title=document.getElementById('wpTitle').value.trim();
-  const tag=document.getElementById('wpTag').value;
-  const rawBody=document.getElementById('wpBody').value.trim();
-  const readVal=document.getElementById('wpRead').value.trim();
-  const btn=document.getElementById('wpPubBtn');
-  const status=document.getElementById('wpPubStatus');
+function publishPost(){
+  var title=document.getElementById('wpTitle').value.trim();
+  var tag=document.getElementById('wpTag').value;
+  var rawBody=document.getElementById('wpBody').value.trim();
+  var readVal=document.getElementById('wpRead').value.trim();
+  var btn=document.getElementById('wpPubBtn');
+  var status=document.getElementById('wpPubStatus');
   if(!title||!rawBody){status.className='wp-pub-status err';status.textContent='Title and body required.';return;}
   btn.disabled=true;status.className='wp-pub-status';status.textContent='Publishing…';
-  try{
-    const token=sessionStorage.getItem('gh_token');
-    // Get current posts.json SHA
-    const meta=await fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{headers:{Authorization:'token '+token,Accept:'application/vnd.github+json'}});
-    const metaJson=await meta.json();
-    const curPosts=JSON.parse(atob(metaJson.content.replace(/
-/g,'')));
-    const words=rawBody.split(/\s+/).length;
-    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const d=new Date();
-    const newPost={tag,title,date:months[d.getMonth()]+' '+d.getFullYear(),read:readVal||(Math.max(2,Math.round(words/200))+' min'),excerpt:rawBody.replace(/###[^
-]*/g,'').replace(/\*\*/g,'').replace(/
-/g,' ').trim().slice(0,200)+'…',body:parseBody(rawBody)};
+  var token=sessionStorage.getItem('gh_token');
+  fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{headers:{Authorization:'token '+token,Accept:'application/vnd.github+json'}})
+  .then(function(r){return r.json();})
+  .then(function(metaJson){
+    var curPosts=JSON.parse(atob(metaJson.content.replace(/\n/g,'')));
+    var words=rawBody.split(/\s+/).length;
+    var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var d=new Date();
+    var newPost={tag:tag,title:title,date:months[d.getMonth()]+' '+d.getFullYear(),read:readVal||(Math.max(2,Math.round(words/200))+' min'),excerpt:rawBody.replace(/###[^\n]*/g,'').replace(/\*\*/g,'').replace(/\n/g,' ').trim().slice(0,200)+'…',body:parseBody(rawBody)};
     curPosts.unshift(newPost);
-    const newContent=btoa(unescape(encodeURIComponent(JSON.stringify(curPosts,null,2))));
-    const res=await fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{method:'PUT',headers:{Authorization:'token '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'Add post: '+title,content:newContent,sha:metaJson.sha})});
-    if(!res.ok){const e=await res.json();throw new Error(e.message||'GitHub API error');}
-    allPosts.unshift(newPost);renderPosts();
-    document.getElementById('wpTitle').value='';document.getElementById('wpBody').value='';document.getElementById('wpRead').value='';
-    status.className='wp-pub-status ok';status.textContent='✓ Published! Live in ~60 seconds.';
-    setTimeout(()=>{closeWrite();document.getElementById('blog').scrollIntoView({behavior:'smooth'});},1800);
-  }catch(e){status.className='wp-pub-status err';status.textContent='Error: '+e.message;}
-  btn.disabled=false;
+    var newContent=btoa(unescape(encodeURIComponent(JSON.stringify(curPosts,null,2))));
+    return fetch('https://api.github.com/repos/ramya270901-gif/home/contents/posts.json',{method:'PUT',headers:{Authorization:'token '+token,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'Add post: '+title,content:newContent,sha:metaJson.sha})})
+    .then(function(res){
+      if(!res.ok){return res.json().then(function(e){throw new Error(e.message||'GitHub API error');});}
+      allPosts.unshift(newPost);renderPosts();
+      document.getElementById('wpTitle').value='';document.getElementById('wpBody').value='';document.getElementById('wpRead').value='';
+      status.className='wp-pub-status ok';status.textContent='✓ Published! Live in ~60 seconds.';
+      setTimeout(function(){closeWrite();document.getElementById('blog').scrollIntoView({behavior:'smooth'});},1800);
+    });
+  })
+  .catch(function(e){status.className='wp-pub-status err';status.textContent='Error: '+e.message;btn.disabled=false;});
 }
 </script>
 </body>
